@@ -29,7 +29,7 @@ In `runs/20260924_140915/traces/claim_02_stolen_bike.jsonl`, the `stop_reason` s
 
 **4. Your numbers.**
 
-For claim_01_kitchen_fire, the run summary recorded 2 turns and an estimated cost of $0.0086. Its trace shows tool_use on turn 1 and end_turn on turn 2. The full eight-claim run reported $0.1096, so the individual claim cost and total run cost are different measurements.
+For `claim_01_kitchen_fire`, the run summary recorded **2 turns** and an estimated cost of **$0.0086**. Its trace shows `tool_use` on turn 1 and `end_turn` on turn 2. The full eight-claim run reported **$0.1096**, so the individual claim cost and total run cost are different measurements.
 
 ### System 2 — Context strategy
 
@@ -79,11 +79,11 @@ The System 4 design uses persisted state so an invocation can distinguish a vali
 
 **14. Three layers.**
 
-# At the **model** layer, the System 1 trace shows Claude selecting tools and producing the `tool_use`/`end_turn` sequence. 
+- At the **model** layer, the System 1 trace shows Claude selecting tools and producing the `tool_use`/`end_turn` sequence. 
 
-# At the **harness** layer, the System 1 loop interprets those signals and the System 3 validator checks configuration deterministically. 
+- At the **harness** layer, the System 1 loop interprets those signals and the System 3 validator checks configuration deterministically. 
 
-# At the **orchestration** layer, the System 4 shift output and bounded hot state show work being coordinated across invocations instead of relying on one ever-growing conversation.
+- At the **orchestration** layer, the System 4 shift output and bounded hot state show work being coordinated across invocations instead of relying on one ever-growing conversation.
 
 **15. Deterministic vs prompt.**
 
