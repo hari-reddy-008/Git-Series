@@ -6,7 +6,7 @@
 ## Environment
 - **Model(s):** The (claude-haiku-4-5-20251001 model) was employed in the system 1 API run and the token counting was recorded by system 2 using Anthropic's model-authoritative messages.count_tokens endpoint.
 - **Operating system / Python:** A Linux environment consisting of the Python setup used for all four of the `pytest` headers.
-– **API expenditure and results:** $0.1096, with System 1 having 29 passed, System 2 having 28 passed and 2 skipped, System 3 having 35 passed, and System 4 having 33 passed.
+- **API expenditure and results:** $0.1096, with System 1 having 29 passed, System 2 having 28 passed and 2 skipped, System 3 having 35 passed, and System 4 having 33 passed.
 
 **1. Loop control.**
 In the file called `runs/20260924_140915/traces/claim_02_stolen_bike.jsonl` the trace indicates `tool_use → tool_use → tool_use → tool_use → end_turn`. The way the loop is implemented involves checking the value of `response.stop_reason`: if the result is `tool_use` then the loop continues, but when it is `end_turn` the process returns the result. It is therefore the model's API that signals the termination condition rather than using a fixed number of iterations.
