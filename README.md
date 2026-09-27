@@ -1,34 +1,89 @@
-# Perturbation Log
+# Capstone Evidence Pack
 
-## System 1 — Insurance policy extraction
+The evidence which was gathered during the process of reproducing and testing the three reference systems is contained in this folder.
 
-### Perturbation
-We used the provided test 'test_ac_01_04_missing_source_halts_immediately', this test being one that puts the missing 'endorsements' source to the test.
+## Submission Structure
 
-### Observed result
-The test was successful; the expected behaviour was a 'RetryFutileEscalation' for the 'endorsements' field using the 'endorsements_absent' pattern and involving one client call.
+```text
+capstone-submission/
+│
+├── README.md
+├── environment.txt
+├── perturbation-log.md
+├── reflection-brief.md
+│
+├── 01-policy-pipeline/
+│   ├── tests.txt
+│   ├── mypy.txt
+│   ├── ruff.txt
+│   ├── routing-tests.txt
+│   ├── calibration-report.txt
+│   ├── perturbation-missing-source.txt
+│   │
+│   └── screenshots/
+│       └── system1-routing-tests.png
+│
+├── 02-mortgage-extraction/
+│   ├── tests.txt
+│   ├── mypy.txt
+│   ├── ruff.txt
+│   ├── replay-appraisal.txt
+│   ├── replay-missing-bonus.txt
+│   ├── replay-sum-mismatch.txt
+│   ├── perturbation-validator-mismatch.txt
+│   │
+│   └── screenshots/
+│       └── system2-mortgage-validation.png
+│
+└── 03-supply-chain/
+    ├── tests.txt
+    ├── mypy.txt
+    ├── ruff.txt
+    ├── offline-meridian.txt
+    ├── timeout-run.txt
+    ├── perturbation-logistics-timeout.txt
+    │
+    └── screenshots/
+        └── system3-timeout.png
+```
+## System 1 — Validated, Routed Insurance Policy Extraction
 
-### Evidence
-`01-policy-pipeline/perturbation-missing-source.txt`
+The evidence consists of the entire test suite, the results of the type-checking and linting, the routing tests, the calibration evidence, and the results of the controlled perturbation involving a missing source.
 
-## System 2 — Mortgage extraction
+The test suite as a whole resulted in 45 tests passing and 3 being skipped; the ones that were skipped were the live Anthropic API tests since there was no ANTHROPIC_API_KEY available.
 
-### Perturbation
-We used the supplied validator test 'test_ac_04_02_inconsistent_when_beyond_tolerance', this test giving a stated monthly total that exceeds the validator's default $1 tolerance.
+All nine routing tests were passed in the offline routing test. The live API pipeline was not run without credentials, and no live API-generated routing artifact was created.
 
-### Observed result
-The test was passed and the validator accurately spotted the extraction as being inconsistent.
+## System 2 — Resilient Mortgage Document Extraction
 
-### Evidence
-`02-mortgage-extraction/perturbation-validator-mismatch.txt`
+The evidence includes the full test suite, results from static analysis, offline replay captures, and a controlled validator change.
 
-## System 3 — Supply-chain investigation
+The entire test suite resulted in 25 tests passing.
 
-### Perturbation
-Carried out the coordinator test named 'test_coordinator_proceeds_and_annotates_gap' with the option simulate_logistics_timeout set to True.
+The replay shows a failure to display the appraisal, the unavailable bonus information, and a discrepancy in the monthly income figure. The case involving the discrepancy illustrates the explicit identification of an inconsistency rather than simply accepting the given total.
 
-### Observed result
-The test was successful. The coordinator then carried on with the investigation, kept the details of the failure, and showed the impacted logistics coverage as an incomplete gap instead of aborting the investigation.
+## System 3 — Supply Chain Risk Investigation
 
-### Evidence
-`03-supply-chain/perturbation-logistics-timeout.txt`
+The evidence consists of the entire test suite, the static-analysis results, an offline investigation into Meridian, and a simulation of a logistics-timeout scenario.
+
+The entire test suite resulted in 34 tests passing.
+
+The evidence from the investigation keeps track of the source's origin and identifies findings that have been corroborated, those based on a single source, contested ones, and those which are incomplete. The result obtained after the timeout period indicates that the investigation carries on by recording the unavailable logistics source as an incomplete coverage area.
+
+The fact that the mypy limitation for System 3 is recorded in environment.txt and the relevant evidence file rather than being indicated as a successful type check.
+
+## Perturbation Evidence
+
+One deliberate perturbation was performed for each system:
+
+Policy pipeline: missing endorsements source.
+- In the case of a mortgage extraction, the stated total exceeds the validator's tolerance.
+- Supply chain: a simulation of a logistics timeout.
+
+The observations are recorded in the file perturbation-log.md.
+
+## Reflection
+
+The file called reflection-brief.md includes the final reflection and relates the observations set out in it to the evidence gathered during the execution.
+
+The results that are reported here are based on the actual executions included in this pack and not on any live API results which were unavailable.
