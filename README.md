@@ -8,7 +8,7 @@ The calibration report revealed a significant risk in that an overall result can
 
 The controlled missing-source perturbation was also successful; it triggered the `endorsements`-absent path and confirmed that immediate escalation took place rather than repeated futile retries.
 
-The Anthropic pipeline was not run since the necessary API key was not available, and therefore no assertion can be made regarding a live-generated routing_decisions.json artifact.
+The Anthropic pipeline was not run because the API key was not working, and therefore no assertion can be made regarding a live-generated routing_decisions.json artifact.
 
 ## 2. System 2, Resilient Mortgage Document Extraction
 
