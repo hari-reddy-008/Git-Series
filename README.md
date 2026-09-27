@@ -1,37 +1,192 @@
-# Reflection Brief
+# Enterprise Multi-Agent Code Review Orchestrator
 
-## 1. System 1 — The extraction of insurance policies that have been validated and routed
+Construct a multi-agent system that is ready for production use and which automates code reviews using the Claude Agent SDK.
 
-The execution path in question showed that the test suite had passed and that the static checks were clear: 45 of the tests passed, while the three live API tests were skipped since the ANTHROPIC_API_KEY was not available. All nine of the routing tests passed for the documented routing fallback. The routing tests included cases for automatic approval of eligible high-confidence results, human review in the case of low confidence and integration failures, reviewer disagreement, stratified spot checks, and calibration behaviour.
+## Project Overview
 
-The calibration report revealed a significant risk in that an overall result can conceal information—the general Brier score was 0.291, whereas the 'umbrella/exclusions' section had n=2, a confidence level of 0.93, an accuracy of 0.00 and a Brier score of 0.865. Therefore, it is advisable to use sliced calibration evidence rather than depending solely on the aggregate calibration figure.
+This system uses multiple specialized AI agents working together to provide comprehensive code reviews:
 
-The controlled missing-source perturbation was also successful; it triggered the `endorsements`-absent path and confirmed that immediate escalation took place rather than repeated futile retries.
+- **Main Orchestrator** - Coordinates the review process and aggregates results
+- **Code Quality Analyzer** - Identifies code smells, anti-patterns, and best practice violations
+- **Test Coverage Analyzer** - Evaluates test completeness and suggests missing test cases
+- **Refactoring Suggester** - Recommends architectural improvements and refactoring opportunities
 
-The Anthropic pipeline was not run because the API key was not working, and therefore no assertion can be made regarding a live-generated routing_decisions.json artifact.
+## What's Provided
 
-## 2. System 2, Resilient Mortgage Document Extraction
+This starter includes the infrastructure you need:
 
-The entire test suite achieved 25 out of 25 with clean reports from both mypy and Ruff; the offline replay scenarios showed three different behaviours.
+- **Type Definitions** (`src/types/`) - Zod schemas for validation
+- **Logger** (`src/utils/logger.ts`). Uses Winston for structured logging.
+- **Report Generator** (`src/utils/report-generator.ts`), makes reports in Markdown, HTML, or JSON
+- **Project Config**. `package.json`, `tsconfig.json`, `.env.example`
+- **Test Skeletons** (`tests/`) - Test file structure
+- **Example Skill** (`.claude/skills/`) - Sample Claude skill
 
-The typed extraction from the appraisal replay showed the gross_living_area_sqft value set at 2400 and included a valid result with no discrepancies. In the case of the missing-bonus replay, the unavailable bonus information was given a value of null and yet remained consistent. The income-sum-mismatch replay found an inconsistency since the calculated monthly income was 9642.17 whereas the stated amount was 10892.17, the difference being -1250.00.
+## What You Need to Implement
 
-The validator's controlled perturbation was also accepted. Taken together, these artifacts demonstrate the advantage of including both calculated and stated values and of making mathematical discrepancies explicit rather than simply accepting a stated total.
+Your tasks:
 
-## 3. System Three — Investigation into Supply Chain Risk
+1. **Agent Definitions** (`src/agents/`)
+   - Code Quality Analyzer
+   - Test Coverage Analyzer
+   - Refactoring Suggester
 
-The full test suite passed all 34 of its tests and Ruff also passed. The offline Meridian run resulted in a briefing which maintained provenance and was able to distinguish between findings that were corroborated, those based on a single source, contested ones, and those that were incomplete.
+2. **Prompts** (`src/prompts/`)
+   - Orchestrator prompt
+   - Agent-specific prompts
 
-For instance, the figure for `average_lead_time_days` was confirmed by two different sources and stated to be 12.0 days, whereas `on_time_delivery_rate` was directly disputed with 95.0 percent given in the supplier_audit and 78.0 percent cited by logistics. Additionally, the briefing raised an ambiguous claim regarding the supplier's identity and also highlighted an incomplete high-impact metric for which there was no reliable source.
+3. **MCP Configuration** (`src/config/mcp.config.ts`)
+   - GitHub MCP server
+   - ESLint MCP server
 
-The logistics-timeout perturbation was resolved when the project's `.venv` was run. The coordinator then carried on with the investigation and noted the coverage gap that resulted, rather than aborting. This shows the difference between a source failure and a valid empty result, as well as the importance of keeping the failure context when continuing with the available sources.
+4. **Orchestrator** (`src/orchestrator.ts`)
+   - Main coordination logic
+   - Agent spawning and result aggregation
 
-The project check failed when using the mypy command for System 3 since the mypy configuration provided targets Python 3.11 but the installed NumPy stub contains syntax that requires Python 3.12 or later. The fact that this limitation exists is recorded as evidence rather than treating it as a successful type check.
+5. **Main Entry Point** (src/main.ts)
+   - CLI argument parsing
+   - Environment validation
+   - Report generation
 
-## Cross-system reflection
+6. **Error Handler** (Recommended) (`src/utils/error-handler.ts`)
+   - Custom `ReviewError` class
+   - Retry logic with exponential backoff
+   - Timeout wrapper
 
-In all three systems the most frequent design feature was the explicit management of uncertainty and failure. The evidence reveals different methods of achieving this: human-review routing and sliced calibration in the policy pipeline, the direct reporting of mathematical discrepancies in mortgage extraction, and provenance-aware partial results, contested claims, and coverage gaps in the supply-chain investigation.
+7. **Rate Limiter** (Optional) (`src/utils/rate-limiter.ts`)
+   - Token bucket algorithm with sliding window
+   - Request and token tracking
+   - Concurrent request management
 
-The disturbances were useful since they allowed the behaviour of the system to be tested under adverse conditions rather than just its normal, straightforward functionality. In every instance, the test or fixture provided expected the system to make the problem apparent rather than conceal it by, for example, escalating a missing policy source, flagging an inconsistent income total, or proceeding despite a documented source failure.
+## Getting Started
 
-One drawback of this evidence pack is that System 1's live Anthropic end-to-end pipeline could not be run without an API key, and the evidence therefore makes use of the project's documented routing-test fallback in that case. Similarly, System 3 also has the documented mypy environment/configuration limitation mentioned above.
+### Prerequisites
+
+- Node.js 18+
+Either use the Anthropic API access (which is available in the Vocareum workspace) or obtain your own API key from https://console.anthropic.com/
+- GitHub Personal Access Token (recommended; scopes: repo, read:org)
+
+### Installation
+
+**In Vocareum Workspace (Recommended):**
+
+Anthropic API credentials are already set up in your workspace.
+
+```bash
+# Install dependencies from repository root (uses npm workspaces)
+cd /voc/work/cd14715-claude-code-classroom
+npm install
+
+# Navigate to project and configure
+cd project/starter
+cp .env.example .env
+```
+
+**Local Setup:**
+
+```bash
+# Clone the repository
+git clone https://github.com/udacity/cd14715-claude-code-classroom.git
+cd cd14715-claude-code-classroom/project/starter
+
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env
+```
+
+### Configuration
+
+Set your settings by editing the .env file:
+
+**In Vocareum Workspace:**
+```bash
+# API credentials are already in your environment - don't add them here
+
+# Model Configuration (REQUIRED)
+ANTHROPIC_MODEL=claude-sonnet-4-5-20250929
+
+# Project root (REQUIRED)
+PROJECT_ROOT=/voc/work/cd14715-claude-code-classroom/project/starter
+
+# GitHub Token (RECOMMENDED for higher rate limits)
+# GITHUB_TOKEN=ghp_your-token-here
+
+# Logging level (optional)
+LOG_LEVEL=info
+```
+
+**Local Setup with Your Own API Key:**
+```bash
+# Your Anthropic API key
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+
+# Model Configuration (REQUIRED)
+ANTHROPIC_MODEL=claude-sonnet-4-5-20250929
+
+# Project root (REQUIRED - update to your path)
+PROJECT_ROOT=/absolute/path/to/project/starter
+
+# GitHub Token (RECOMMENDED)
+# GITHUB_TOKEN=ghp_your-token-here
+
+# Logging level (optional)
+LOG_LEVEL=info
+```
+
+### Running
+
+```bash
+# Development mode
+npm run dev -- <owner> <repo> <pr-number>
+
+# Production build
+npm run build
+npm start <owner> <repo> <pr-number>
+
+# Example
+npm run dev -- facebook react 12345
+```
+
+### Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run specific test
+npm test -- orchestrator.test.ts
+
+# Watch mode
+npm test -- --watch
+```
+
+## Key Technologies
+
+- **Claude Agent SDK** - Multi-agent orchestration framework
+- **Model Context Protocol (MCP)** - External data integration
+- **Zod** - Schema validation and type safety
+- **TypeScript** - Type-safe development
+- **Vitest** - Testing framework
+- **Winston** - Structured logging
+
+## Success Criteria
+
+Your implementation is complete when:
+
+- [ ] TypeScript compiles without errors: `npm run build`
+- [ ] All tests pass: `npm test`
+- [ ] Can review a real PR: `npm start owner repo pr-number`
+- [ ] Generates reports in at least one format (MD, HTML, JSON)
+- [ ] Rate limiting prevents API throttling (Optional)
+- [ ] Errors are handled gracefully (Recommended)
+
+## Resources
+
+- [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk)
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+- [Anthropic API Docs](https://docs.anthropic.com/)
+- [Zod Documentation](https://zod.dev/)
+
+Good luck!
