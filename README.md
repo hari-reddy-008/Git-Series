@@ -45,7 +45,7 @@ capstone-submission/
     │
     └── screenshots/
         └── system3-timeout.png
-
+```
 ## System 1 — Validated, Routed Insurance Policy Extraction
 
 Evidence includes the complete test suite, type-checking and linting results, routing tests, calibration evidence, and a controlled missing-source perturbation.
