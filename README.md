@@ -1,18 +1,18 @@
 # Enterprise Multi-Agent Code Review Orchestrator
 
-Production-ready multi-agent system that automates code review, test coverage analysis, and refactoring suggestions for GitHub pull requests using Claude Agent SDK.
+A production-ready multi-agent system which, using the Claude Agent SDK, automates the processes of code review, test coverage analysis, and providing refactoring suggestions for GitHub pull requests.
 
 ## Features
 
-- **Multi-Agent Architecture**: Coordinates 3 specialized subagents for comprehensive PR analysis.
-- **Code Quality Analysis**: Analyzes security, performance, maintainability, and coding best practices.
-- **Test Coverage Analysis**: Identifies potentially untested code paths and provides test recommendations.
-- **Refactoring Suggestions**: Identifies modernization, maintainability, and design improvement opportunities.
-- **MCP Integration**: Uses GitHub MCP for pull-request and repository data and ESLint MCP for linting support.
-- **Claude Skills**: Uses dedicated Skills for JavaScript, TypeScript, and security-focused analysis.
-- **Structured Output**: Validates the final review against the defined report schemas.
-- **Production-Grade Reliability**: Includes rate limiting, retry handling, structured logging, validation, and error handling.
-- **Multiple Report Formats**: Generates JSON, Markdown, and HTML reports.
+- **Multi-Agent Architecture**: It coordinates three specialized sub-agents in order to carry out a thorough PR analysis.
+- **Code Quality Analysis**: This analysis covers security, performance, maintainability, and adherence to coding best practices.
+- **Test Coverage Analysis**: It is able to identify code paths that may not have been tested and gives advice on tests.
+- **Suggestions for refactoring**: These highlight opportunities for modernization, improving maintainability, and enhancing the design.
+- **MCP Integration**: It makes use of the GitHub MCP to obtain pull-request and repository data as well as the ESLint MCP for linting support.
+- **Claude Skills**: Has specialized Skills for JavaScript, TypeScript, and for analysis with a focus on security.
+- **Structured Output**: The final review is checked against the report schemas that were defined.
+- **Production-Grade Reliability**: It features rate limiting, retry handling, structured logging, validation, and error handling.
+- **Multiple Report Formats**: It can produce reports in JSON, Markdown, and HTML format.
 
 ## Architecture
 
@@ -20,12 +20,12 @@ Production-ready multi-agent system that automates code review, test coverage an
 
 Main coordinator that:
 
-1. Receives the GitHub repository owner, repository name, and pull-request number from the command line.
-2. Retrieves pull-request information and changed files through GitHub MCP.
-3. Coordinates the three specialized subagents for analysis.
-4. Aggregates the subagent results into a unified structured review report.
-5. Validates the generated structured output against the project schema.
-6. Generates JSON, Markdown, and HTML reports.
+The GitHub repository owner, the name of the repository, and the number of the pull request are obtained from the command line.
+2. Gets the pull request information and the files that have changed via the GitHub MCP.
+3. It arranges the three specialized subagents to carry out the analysis.
+4. It compiles the individual results from the subagents into a single, structured review report.
+5. Checks that the generated structured output conforms to the project schema.
+6. It produces reports in JSON, Markdown, and HTML format.
 
 ### Subagents
 
@@ -57,34 +57,34 @@ cp .env.example .env
 
 ## Configuration
 
-Edit `.env` with the required credentials and project configuration:
+Enter the necessary credentials and project settings into the .env file:
 
 ```text
 ANTHROPIC_API_KEY=sk-ant-your-key-here
 GITHUB_TOKEN=ghp_your-token-here
 
-# Absolute path to the project root containing .claude/skills/
+The absolute path to the project root that contains the .claude/skills/ directory.
 PROJECT_ROOT=/absolute/path/to/project/starter
 
 LOG_LEVEL=info
 ```
 
-Do not commit `.env` or real API credentials to the repository.
+You should not include a file called `.env` or actual API credentials in the repository.
 
 ### MCP Servers
 
 Configured in `src/config/mcp.config.ts`:
 
-- **GitHub MCP**: Provides pull-request information and repository file access.
-- **ESLint MCP**: Provides ESLint-related analysis support.
+- The GitHub MCP offers information regarding pull requests and access to repository files.
+- The ESLint MCP offers analysis support related to ESLint.
 
 ### Claude Skills
 
 Located in `.claude/skills/`:
 
-- `javascript-best-practices` - JavaScript coding and best-practice analysis.
-- `typescript-patterns` - TypeScript-specific patterns and analysis.
-- `security-analysis` - Security-focused and secure-coding analysis.
+- `javascript-best-practices` - an analysis of JavaScript coding and best practices.
+- `typescript-patterns` - a set of patterns specific to TypeScript and an analysis of them.
+- `security-analysis` - An analysis that is focused on security and concerns secure coding.
 
 ## Usage
 
@@ -108,7 +108,7 @@ npm run dev -- lucaong minisearch 295
 npm run dev -- lucaong minisearch 305
 ```
 
-The required `airaamane/simple-todo-app` validation target was attempted, but the repository was inaccessible. The fallback pull requests above were used for successful end-to-end validation.
+The attempt to use the `airaamane/simple-todo-app` validation target failed because the repository could not be accessed; instead, the pull requests listed above were employed for the successful end-to-end validation.
 
 ### Build for Production
 
@@ -143,11 +143,11 @@ Test Files: 4 passed
 Tests: 65 passed | 1 skipped
 ```
 
-The TypeScript production build also completed successfully with `npm run build`.
+The successful completion of the TypeScript production build was achieved using the command `npm run build`.
 
 ## Output
 
-The system generates JSON, Markdown, and HTML reports under `reports/`.
+The system produces JSON, Markdown, and HTML reports in the reports/ directory.
 
 Example report structure:
 
@@ -210,30 +210,30 @@ reports/
 ```text
 project/starter/
 ├── src/
-│   ├── main.ts                 # CLI entry point
-│   ├── orchestrator.ts         # Main orchestrator
+│   ├── main.ts                 # Command-line interface entry point
+│   ├── orchestrator.ts          # The main orchestrator
 │   ├── agents/                 # Specialized subagent definitions
 │   │   ├── code-quality-analyzer.ts
 │   │   ├── test-coverage-analyzer.ts
 │   │   └── refactoring-suggester.ts
 │   ├── config/
-│   │   └── mcp.config.ts       # MCP server configuration
+│   │   └── mcp.config.ts       # MCP server settings
 │   ├── prompts/
-│   │   └── index.ts            # Orchestrator and agent prompts
+│   │   └── index.ts            # contains the orchestrator and agent prompts
 │   ├── types/
-│   │   ├── analysis-results.ts # Subagent output schemas
-│   │   └── report-types.ts     # Final report schema
+│   │   ├── analysis-results.ts # the output schemas of the subagent
+│   │   └── report-types.ts    # the schema for the final report
 │   └── utils/
 │       ├── logger.ts            # Structured logging
-│       ├── rate-limiter.ts     # Sliding-window rate limiter
-│       ├── error-handler.ts    # Retry and error handling
-│       ├── report-generator.ts # JSON, Markdown, and HTML reports
-│       └── index.ts             # Utility exports
+│       ├── rate-limiter.ts  # A sliding-window rate limiter
+│       ├── error-handler.ts    # Handles retries and errors
+│       ├── report-generator.ts # which generates reports in JSON, Markdown, and HTML format
+│       └── index.ts             # The utility exports
 ├── .claude/
 │   └── skills/                 # Claude Skills definitions
 ├── tests/                      # Automated test suite
 ├── reports/                    # Generated review reports
-├── .env.example                # Environment template
+.env.example                # Environment template
 └── package.json
 ```
 
@@ -241,24 +241,24 @@ project/starter/
 
 ### Rate Limiting
 
-The project implements a sliding-window rate limiter to control request and token usage.
+The project makes use of a sliding-window rate limiter in order to control the number of requests and tokens used.
 
-The implementation tracks recent requests, removes records outside the configured time window, checks request and token limits before proceeding, and waits when the limits are reached.
+The system keeps record of recent requests, deletes any entries outside the specified time window, verifies that the request and token limits are not exceeded before carrying on, and waits if those limits have been reached.
 
-The limiter also supports concurrent request control and token accounting for completed requests.
+The limiter also provides for the control of concurrent requests and for the accounting of tokens associated with completed requests.
 
 ### Error Handling
 
-- Retry handling with exponential backoff.
-- Randomized jitter between retry attempts.
-- Retry exhaustion is converted into a structured `ReviewError`.
-- Timeout handling for asynchronous operations.
-- Structured error codes and formatted error messages.
-- Graceful handling of failures during the review workflow.
+- Include retrying with an exponential backoff.
+- Apply random jitter to the retry attempts.
+- The exhaustion resulting from a retry is turned into a structured ReviewError.
+- The handling of timeouts for asynchronous operations.
+- Organized error codes and clear error messages.
+The ability to handle failures gracefully throughout the review process.
 
 ### Observability
 
-The project includes structured logging through the logger utility.
+The project makes use of the logger utility for structured logging.
 
 Logs can capture events associated with:
 
@@ -268,16 +268,16 @@ Logs can capture events associated with:
 - Report generation
 - Errors and failures
 
-Generated review reports also contain metadata such as analysis time and execution information.
+The review reports which are generated also include metadata for example the time of the analysis and information regarding the execution.
 
 ## Limitations
 
-- The system requires valid GitHub access to retrieve pull-request information and repository files.
-- GitHub API and MCP availability can affect end-to-end review execution.
-- Real pull-request analysis requires valid authentication credentials.
-- The required `airaamane/simple-todo-app` validation repository was inaccessible during validation, so the course-provided fallback pull requests were used for successful integration testing.
-- Generated reports contain model-produced analysis and should be reviewed before being treated as authoritative code-review decisions.
-- API/model availability and rate limits can affect execution time.
+The system needs valid GitHub access in order to obtain information about pull requests and repository files.
+The execution of an end-to-end review can be affected by the availability of the GitHub API and the MCP.
+You need valid login details to analyze a real pull request.
+- Since the `airaamane/simple-todo-app` validation repository could not be accessed during the validation process, the fallback pull requests provided by the course were used to achieve a successful integration test.
+The reports produced include analysis generated by the model and must therefore be checked before they are regarded as official code-review decisions.
+The availability of the API or model and the rate limits may have an impact on the time it takes to carry out the execution.
 
 ## Troubleshooting
 
@@ -297,16 +297,16 @@ PROJECT_ROOT=/absolute/path/to/project/starter
 
 ### "Rate limit exceeded"
 
-The rate limiter uses a sliding time window. If requests are temporarily limited, wait for the active window to clear or adjust the configured limits in the rate-limiter implementation.
+A sliding time window is used by the rate limiter; if requests are temporarily limited then either wait for the current window to expire or modify the limits as specified in the rate-limiter implementation.
 
 ### "GitHub API error"
 
 Verify that:
 
 - `GITHUB_TOKEN` is configured.
-- The token has the required repository access.
-- The target repository and pull request exist and are accessible.
-- The GitHub MCP server can start successfully.
+- The token has the required access to the repository.
+- The repository in question and the pull request are there and can be accessed.
+- The GitHub MCP server manages to start.
 
 ### "Structured output validation failed"
 
@@ -317,13 +317,13 @@ src/types/analysis-results.ts
 src/types/report-types.ts
 ```
 
-Also verify that the orchestrator and subagent prompts request output matching the expected schemas.
+Make sure that the prompts used by the orchestrator and the subagent ask for output that conforms to the expected schemas.
 
 ### "Repository not found"
 
-Confirm the owner, repository name, and pull-request number.
+Check that the owner, the name of the repository, and the pull-request number are correct.
 
-For the required `airaamane/simple-todo-app` target, the repository was inaccessible during validation. The course instructions provide fallback public pull requests for this situation.
+When validating the required `airaamane/simple-todo-app` target, the repository could not be accessed. Fallback public pull requests are provided in the course instructions.
 
 ## License
 
@@ -331,4 +331,4 @@ ISC
 
 ## Contributing
 
-This is a Udacity course project demonstrating a multi-agent code-review system using the Claude Agent SDK, GitHub MCP, ESLint MCP, Claude Skills, structured outputs, automated testing, and production-oriented reliability features.
+It is a project carried out as part of a Udacity course which shows how to use the Claude Agent SDK, GitHub MCP, ESLint MCP, Claude Skills, structured outputs, automated testing, and production-oriented reliability features in a multi-agent code-review system.
