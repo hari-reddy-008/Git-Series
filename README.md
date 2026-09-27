@@ -1,192 +1,125 @@
-# Enterprise Multi-Agent Code Review Orchestrator
+# Claude Skills
 
-Construct a multi-agent system that is ready for production use and which automates code reviews using the Claude Agent SDK.
+This directory contains Claude Skills - reusable domain expertise that agents can invoke.
 
-## Project Overview
+## What Are Skills?
 
-This system uses multiple specialized AI agents working together to provide comprehensive code reviews:
+Skills are markdown files that provide Claude with specialized knowledge for specific tasks. They're loaded automatically by the Claude Agent SDK when agents invoke them.
 
-- **Main Orchestrator** - Coordinates the review process and aggregates results
-- **Code Quality Analyzer** - Identifies code smells, anti-patterns, and best practice violations
-- **Test Coverage Analyzer** - Evaluates test completeness and suggests missing test cases
-- **Refactoring Suggester** - Recommends architectural improvements and refactoring opportunities
+## Provided Example
 
-## What's Provided
+- **javascript-best-practices/** - Complete example skill for JavaScript code review
+  - Review this to understand the skill format
+  - See how it provides best practices, common pitfalls, and output format
 
-This starter includes the infrastructure you need:
+## Your Task
 
-- **Type Definitions** (`src/types/`) - Zod schemas for validation
-- **Logger** (`src/utils/logger.ts`). Uses Winston for structured logging.
-- **Report Generator** (`src/utils/report-generator.ts`), makes reports in Markdown, HTML, or JSON
-- **Project Config**. `package.json`, `tsconfig.json`, `.env.example`
-- **Test Skeletons** (`tests/`) - Test file structure
-- **Example Skill** (`.claude/skills/`) - Sample Claude skill
+Create **3 additional skills** (minimum 2 required):
 
-## What You Need to Implement
+### Required Skills
 
-Your tasks:
+1. **typescript-patterns/** - TypeScript-specific analysis
+   - Type safety best practices
+   - Advanced TypeScript patterns
+   - Common type issues
 
-1. **Agent Definitions** (`src/agents/`)
-   - Code Quality Analyzer
-   - Test Coverage Analyzer
-   - Refactoring Suggester
+2. **security-analysis/** - Security-focused code review
+   - OWASP Top 10 vulnerabilities
+   - Secure coding practices
+   - Common security mistakes
 
-2. **Prompts** (`src/prompts/`)
-   - Orchestrator prompt
-   - Agent-specific prompts
+### Optional Skills (Choose 1+)
 
-3. **MCP Configuration** (`src/config/mcp.config.ts`)
-   - GitHub MCP server
-   - ESLint MCP server
+3. **python-code-review/** - Python idioms and patterns
+4. **performance-optimization/** - Performance analysis
+5. **accessibility/** - Web accessibility (for frontend code)
+6. **Your custom skill** - Any domain expertise you want to add
 
-4. **Orchestrator** (`src/orchestrator.ts`)
-   - Main coordination logic
-   - Agent spawning and result aggregation
+## Skill File Structure
 
-5. **Main Entry Point** (src/main.ts)
-   - CLI argument parsing
-   - Environment validation
-   - Report generation
+Each skill must be in its own folder with a `SKILL.md` file:
 
-6. **Error Handler** (Recommended) (`src/utils/error-handler.ts`)
-   - Custom `ReviewError` class
-   - Retry logic with exponential backoff
-   - Timeout wrapper
-
-7. **Rate Limiter** (Optional) (`src/utils/rate-limiter.ts`)
-   - Token bucket algorithm with sliding window
-   - Request and token tracking
-   - Concurrent request management
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-Either use the Anthropic API access (which is available in the Vocareum workspace) or obtain your own API key from https://console.anthropic.com/
-- GitHub Personal Access Token (recommended; scopes: repo, read:org)
-
-### Installation
-
-**In Vocareum Workspace (Recommended):**
-
-Anthropic API credentials are already set up in your workspace.
-
-```bash
-# Install dependencies from repository root (uses npm workspaces)
-cd /voc/work/cd14715-claude-code-classroom
-npm install
-
-# Navigate to project and configure
-cd project/starter
-cp .env.example .env
+```
+.claude/skills/
+├── javascript-best-practices/
+│   └── SKILL.md               ✅ Provided example
+├── typescript-patterns/
+│   └── SKILL.md               TODO: Create
+├── security-analysis/
+│   └── SKILL.md               TODO: Create
+└── python-code-review/
+    └── SKILL.md               TODO: Create
 ```
 
-**Local Setup:**
+## SKILL.md Format
 
-```bash
-# Clone the repository
-git clone https://github.com/udacity/cd14715-claude-code-classroom.git
-cd cd14715-claude-code-classroom/project/starter
+```markdown
+---
+description: Brief description of what this skill provides
+---
 
-# Install dependencies
-npm install
+# Skill Name
 
-# Configure environment
-cp .env.example .env
+Brief introduction
+
+## Section 1: Topic Area
+
+Content, guidelines, examples
+
+## Section 2: Another Topic
+
+More content
+
+## Output:
+
+What format/guidance the skill should return
 ```
 
-### Configuration
+## How Agents Invoke Skills
 
-Set your settings by editing the .env file:
+In your agent prompts, use:
 
-**In Vocareum Workspace:**
-```bash
-# API credentials are already in your environment - don't add them here
-
-# Model Configuration (REQUIRED)
-ANTHROPIC_MODEL=claude-sonnet-4-5-20250929
-
-# Project root (REQUIRED)
-PROJECT_ROOT=/voc/work/cd14715-claude-code-classroom/project/starter
-
-# GitHub Token (RECOMMENDED for higher rate limits)
-# GITHUB_TOKEN=ghp_your-token-here
-
-# Logging level (optional)
-LOG_LEVEL=info
+```
+For .ts files: invoke Skill "typescript-patterns"
 ```
 
-**Local Setup with Your Own API Key:**
-```bash
-# Your Anthropic API key
-ANTHROPIC_API_KEY=sk-ant-your-key-here
+The Claude Agent SDK will:
+1. Load the SKILL.md file
+2. Inject its content into the agent's context
+3. Agent uses the knowledge to provide expert analysis
 
-# Model Configuration (REQUIRED)
-ANTHROPIC_MODEL=claude-sonnet-4-5-20250929
+## Tips for Writing Skills
 
-# Project root (REQUIRED - update to your path)
-PROJECT_ROOT=/absolute/path/to/project/starter
+✅ **DO:**
+- Be specific and actionable
+- Include code examples
+- Organize by category
+- Provide severity guidelines
+- Show good vs bad patterns
 
-# GitHub Token (RECOMMENDED)
-# GITHUB_TOKEN=ghp_your-token-here
+❌ **DON'T:**
+- Make it too long (keep under 500 lines)
+- Include full tutorials (just key points)
+- Duplicate general knowledge Claude already has
+- Use generic advice (be domain-specific)
 
-# Logging level (optional)
-LOG_LEVEL=info
+## Example: Invoking a Skill
+
+In `code-quality-analyzer` prompt:
+
+```typescript
+## Process:
+1. Read the code file with Read tool
+2. Invoke Skills based on file type:
+   - .ts/.tsx files: invoke Skill "typescript-patterns"
+   - .js/.jsx files: invoke Skill "javascript-best-practices"
+   - .py files: invoke Skill "python-code-review"
+   - ALL files: invoke Skill "security-analysis"
+3. Analyze using the skill's guidance
+4. Return structured feedback
 ```
-
-### Running
-
-```bash
-# Development mode
-npm run dev -- <owner> <repo> <pr-number>
-
-# Production build
-npm run build
-npm start <owner> <repo> <pr-number>
-
-# Example
-npm run dev -- facebook react 12345
-```
-
-### Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run specific test
-npm test -- orchestrator.test.ts
-
-# Watch mode
-npm test -- --watch
-```
-
-## Key Technologies
-
-- **Claude Agent SDK** - Multi-agent orchestration framework
-- **Model Context Protocol (MCP)** - External data integration
-- **Zod** - Schema validation and type safety
-- **TypeScript** - Type-safe development
-- **Vitest** - Testing framework
-- **Winston** - Structured logging
-
-## Success Criteria
-
-Your implementation is complete when:
-
-- [ ] TypeScript compiles without errors: `npm run build`
-- [ ] All tests pass: `npm test`
-- [ ] Can review a real PR: `npm start owner repo pr-number`
-- [ ] Generates reports in at least one format (MD, HTML, JSON)
-- [ ] Rate limiting prevents API throttling (Optional)
-- [ ] Errors are handled gracefully (Recommended)
 
 ## Resources
 
-- [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk)
-- [Model Context Protocol](https://modelcontextprotocol.io/)
-- [Anthropic API Docs](https://docs.anthropic.com/)
-- [Zod Documentation](https://zod.dev/)
-
-Good luck!
+- [Claude Agent SDK Skills Documentation](https://platform.claude.com/docs/en/agent-sdk/skills)
+- Example: See `javascript-best-practices/SKILL.md` in this directory
