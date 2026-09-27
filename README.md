@@ -4,6 +4,7 @@ This folder contains the evidence collected while reproducing and exercising the
 
 ## Submission Structure
 
+```text
 capstone-submission/
 │
 ├── README.md
